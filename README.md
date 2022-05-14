@@ -8,7 +8,7 @@ To Run this tool, you also have to:
   - 1.install appium, you can get it from http://appium.io
   - 2.install adb, configure environment variables and make sure you can use command 'adb ...' in cmd directly
 
-Run appium in cmd first, then run the file Main.py in python.
+**Run appium in cmd first, then run the file Main.py in python.**
 
 ## Variables
 The variables you should set including:
