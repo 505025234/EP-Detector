@@ -32,7 +32,7 @@ class Enviromen:
         self.preProNum = 0
         self.preRom = 0
 
-
+        self.timer = tester.timer
 
 
     def CheckAndInit(self):
@@ -107,7 +107,10 @@ class Enviromen:
         #如果不一样或者无法跳过广告页面
         #第四步关闭app
         # print('关闭app')
-        self.driver.terminate_app(self.appName) #关闭app
+        try:
+            self.driver.terminate_app(self.appName) #关闭app
+        except:
+            print('no need to ter') #关闭app
         #第五步重启
 
         self.driver.start_activity(self.appName, self.mainActiName)  # 检查一下能否回到这个界面？
@@ -236,9 +239,13 @@ class Enviromen:
         misOpe = []
 
 
+        self.timer.navStart()
 
         self.CheckAndInit()
+        self.timer.navOver()
 
+
+        self.timer.genStart()
 
         if self.clarriWay == 'pic':
             try:
@@ -287,7 +294,7 @@ class Enviromen:
         time.sleep(1)
 
 
-
+        self.timer.genOver()
 
 
 
@@ -313,19 +320,22 @@ class Enviromen:
 
 
         if ( self.CheckIsSame(fir_cli_CenterImg, preActImg, self.simiLari)):
-
+            self.timer.genStart()
             self.DoBehav(cliX,cliY,Behaviour.doubleClick)
+            self.timer.genOver()
             mybehav = Behaviour.doubleClick
         else:
             self.AddActiToList([cliX, cliY, Behaviour.click])
             try:
+                self.timer.genStart()
                 self.DoBehav(cliX,cliY,Behaviour.click)
+                self.timer.genOver()
                 mybehav = Behaviour.click
             except:
                 pass
 
 
-
+        self.timer.oraStart()
 
         oneRec, oneSub, oneProNum, oneRom = self.GetAllStatus()
 
@@ -346,6 +356,7 @@ class Enviromen:
                 b=190           
             misOpe.append((cliX, cliY, (r,g,b),mybehav.value))
 
+        self.timer.oraOver()
 
 
 
