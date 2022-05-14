@@ -52,8 +52,11 @@ class Spacing:
         self.preProNum = 0
         self.preRom = 0
 
+        self.timer = tester.timer
+
     def CheckAndInit(self):
         # #第一步什么都不做，立刻比较，确认是否一致
+
         if self.clarriWay == 'pic':
             try:
                 nowPic = self.driver.screenshot()
@@ -117,7 +120,10 @@ class Spacing:
         # 如果不一样或者无法跳过广告页面
         # 第四步关闭app
         # print('关闭app')
-        self.driver.terminate_app(self.appName)  # 关闭app
+        try:
+            self.driver.terminate_app(self.appName) #关闭app
+        except:
+            print('no need to ter') # 关闭app
         # 第五步重启
 
         self.driver.start_activity(self.appName, self.mainActiName)  # 检查一下能否回到这个界面？
@@ -256,6 +262,7 @@ class Spacing:
 
         for bound in cliResultList:
 
+            self.timer.conStart()
 
             nums = re.findall(r"\d+", bound)
             # print(nums)
@@ -277,7 +284,11 @@ class Spacing:
                     return  misOpe
 
 
+            self.timer.conOver()
+
         for bound in scrResultList:
+
+            self.timer.conStart()
 
             nums = re.findall(r"\d+", bound)
             # print(nums)
@@ -299,7 +310,7 @@ class Spacing:
                     misOpe.append([midX, midY])
                     return misOpe
 
-
+            self.timer.conOver()
 
         return misOpe
 
@@ -396,7 +407,11 @@ class Spacing:
 
 
     def CheckSpacingError(self,midX,midY,behv):
+        self.timer.genStart()
+
+        self.timer.navStart()
         self.CheckAndInit()
+        self.timer.navOver()
 
         self.GetAllStatus()
         self.DoBehav(midX, midY,behv)
@@ -413,6 +428,8 @@ class Spacing:
             except:
                 preActImg = None
 
+        self.timer.genOver()
+
 
         PreOneRec, PreOneSub, PreOneProNum, PreOneRom = self.GetAllStatus()
 
@@ -420,10 +437,18 @@ class Spacing:
 
 
         for beh in [[midX,midY],[midX,midY]]:
+            self.timer.genStart()
+            self.timer.navStart()
             self.CheckAndInit()
+            self.timer.navOver()
+
             self.GetAllStatus()
             self.DoBehav(beh[0],beh[1],behv)
 
+            self.timer.genOver()
+
+
+            self.timer.oraStart()
             if self.clarriWay == 'pic':
                 try:
                     fir_cli_CenterImg = self.driver.screenshot()
@@ -437,13 +462,16 @@ class Spacing:
 
             if (not self.CheckIsSame(fir_cli_CenterImg, preActImg, self.simiLari)):
                 self.AddActiToList([midX, midY, behv])
+                self.timer.oraOver()
                 return True
 
             oneRec, oneSub, oneProNum, oneRom = self.GetAllStatus()
 
             if (abs(oneRec-PreOneRec) > 9000 or abs(oneSub-PreOneSub) > 5000 or abs(oneProNum-PreOneProNum) > 1 or abs(oneRom-PreOneRom) > 512):
+                self.timer.oraOver()
                 return True
 
+            self.timer.oraOver()
 
         return False
 
