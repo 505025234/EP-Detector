@@ -54,7 +54,7 @@ class ActRecord():
             return False
 
 
-        return (diNum*1.0/saNum)<0.1
+        return (diNum*1.0/saNum)<0.2
 
 
     def GetTreeAllIds(self,rootNode, resultList):
