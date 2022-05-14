@@ -35,6 +35,8 @@ class Operation:
         self.preProNum = 0
         self.preRom = 0
 
+        self.timer = tester.timer
+
     def CheckAndInit(self):
         # #第一步什么都不做，立刻比较，确认是否一致
         if self.clarriWay == 'pic':
@@ -106,7 +108,10 @@ class Operation:
         #如果不一样或者无法跳过广告页面
         #第四步关闭app
         # print('关闭app')
-        self.driver.terminate_app(self.appName) #关闭app
+        try:
+            self.driver.terminate_app(self.appName) #关闭app
+        except:
+            print('no need to ter')
         #第五步重启
 
         self.driver.start_activity(self.appName, self.mainActiName)  # 检查一下能否回到这个界面？
@@ -316,8 +321,11 @@ class Operation:
         misOpe = []
 
 
+        self.timer.navStart()
 
         self.CheckAndInit()
+        self.timer.navOver()
+
 
 
         if self.clarriWay == 'pic':
@@ -370,7 +378,12 @@ class Operation:
 
         statusList = []
         for behav in behavList:
+            self.timer.genStart()
+
+            self.timer.navStart()
+
             self.CheckAndInit()
+            self.timer.navOver()
 
             print('bahv',behav)
 
@@ -379,7 +392,9 @@ class Operation:
             self.DoBehav(cliX,cliY,behav)
             print('done!!!')
             
+            self.timer.genOver()
 
+            self.timer.oraStart()
 
             if self.clarriWay == 'pic':
                 try:
@@ -399,6 +414,7 @@ class Operation:
                 for cenImg in imgList:
                     if (self.CheckIsSame(fir_cli_CenterImg, cenImg, self.simiLari)):
                         misOpe.append((cliX, cliY, behav))
+                        self.timer.oraOver()
                         return misOpe
                         break
 
@@ -410,6 +426,7 @@ class Operation:
                 if (abs(oneSub) > 15000 or abs(oneRec) > 19000 or abs(oneProNum) > 2 or abs(oneRom) > 1536):
                     if len(imgList)>0:
                         misOpe.append((cliX, cliY, behav))
+                        self.timer.oraOver()
                         return misOpe
 
 
@@ -435,11 +452,12 @@ class Operation:
                 if (abs(AvgRec) > 9000  or abs(AvgSub) > 5000 or abs(AvgProNum) > 1 or abs(AvgRom) > 512):
 
                     misOpe.append((cliX, cliY, behav))
+                    self.timer.oraOver()
                     return misOpe
 
                 statusList.append(theStatus)
 
-
+            self.timer.oraOver()
 
 
 
